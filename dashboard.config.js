@@ -1,5 +1,5 @@
 const path = require('path');
-const WORKSPACE_PATH = process.env.WORKSPACE_PATH || path.resolve(__dirname, '..');
+const WORKSPACE_PATH = process.env.DASHBOARD_WORKSPACE_PATH || process.env.WORKSPACE_PATH || path.resolve(__dirname, '..');
 const DEFAULT_ENV = {
     NODE_ENV: 'development'
 };
