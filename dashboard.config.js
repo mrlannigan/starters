@@ -4,14 +4,29 @@ const DEFAULT_ENV = {
     NODE_ENV: 'development'
 };
 
+const PREFER_FNM = process.env.PREFER_FNM === 'true';
+
+const NVM_SCRIPT = path.join(__dirname, 'nvmrun.sh');
+const FNM_SCRIPT = path.join(__dirname, 'fnmrun.sh');
+
+const NODE_SCRIPT = PREFER_FNM ? FNM_SCRIPT : NVM_SCRIPT;
+
+function selectArgs(nvm, fnm) {
+    return PREFER_FNM ? fnm : nvm;
+}
+
+function runNpm(cmd) {
+    return `${PREFER_FNM ? '' : 'exec'} npm run ${cmd}`
+}
+
 module.exports = {
     apps: [
         {
             name: 'ui',
             cwd: path.join(WORKSPACE_PATH, 'ui-looking-glass'),
             interpreter: '/bin/bash',
-            script: path.join(__dirname, 'nvmrun.sh'),
-            args: 'run scripts/start.js',
+            script: NODE_SCRIPT,
+            args: selectArgs('run scripts/start.js', 'npm run start'),
             instances: 1,
             autorestart: false,
             watch: false,
@@ -25,8 +40,8 @@ module.exports = {
             name: 'api',
             cwd: path.join(WORKSPACE_PATH, 'api-looking-glass'),
             interpreter: '/bin/bash',
-            script: path.join(__dirname, 'nvmrun.sh'),
-            args: 'exec npm run start:watch',
+            script: NODE_SCRIPT,
+            args: runNpm('start:watch'),
             instances: 1,
             autorestart: false,
             watch: false,
@@ -37,8 +52,8 @@ module.exports = {
             name: 'unicornmock',
             cwd: path.join(WORKSPACE_PATH, 'api-looking-glass/.docker/mocks/service-unicorn'),
             interpreter: '/bin/bash',
-            script: path.join(__dirname, 'nvmrun.sh'),
-            args: 'exec npm run start',
+            script: NODE_SCRIPT,
+            args: runNpm('start'),
             instances: 1,
             autorestart: false,
             watch: false,
@@ -52,8 +67,8 @@ module.exports = {
             name: 'ml-data',
             cwd: path.join(WORKSPACE_PATH, 'service-ml-data'),
             interpreter: '/bin/bash',
-            script: path.join(__dirname, 'nvmrun.sh'),
-            args: 'exec npm run start:watch',
+            script: NODE_SCRIPT,
+            args: runNpm('start:watch'),
             instances: 1,
             autorestart: false,
             watch: false,
@@ -67,8 +82,8 @@ module.exports = {
             name: 'login',
             cwd: path.join(WORKSPACE_PATH, 'service-login'),
             interpreter: '/bin/bash',
-            script: path.join(__dirname, 'nvmrun.sh'),
-            args: 'exec npm run start',
+            script: NODE_SCRIPT,
+            args: runNpm('start'),
             instances: 1,
             autorestart: true,
             watch: false,
@@ -82,8 +97,8 @@ module.exports = {
             name: 'email',
             cwd: path.join(WORKSPACE_PATH, 'service-email'),
             interpreter: '/bin/bash',
-            script: path.join(__dirname, 'nvmrun.sh'),
-            args: 'exec npm run start',
+            script: NODE_SCRIPT,
+            args: runNpm('start'),
             instances: 1,
             autorestart: true,
             watch: false,
@@ -97,8 +112,8 @@ module.exports = {
             name: 'pdf',
             cwd: path.join(WORKSPACE_PATH, 'service-pdf'),
             interpreter: '/bin/bash',
-            script: path.join(__dirname, 'nvmrun.sh'),
-            args: 'exec npm run start',
+            script: NODE_SCRIPT,
+            args: runNpm('start'),
             instances: 1,
             autorestart: true,
             watch: false,
@@ -113,8 +128,8 @@ module.exports = {
             name: 'annotations',
             cwd: path.join(WORKSPACE_PATH, 'service-annotations'),
             interpreter: '/bin/bash',
-            script: path.join(__dirname, 'nvmrun.sh'),
-            args: 'exec npm run start',
+            script: NODE_SCRIPT,
+            args: runNpm('start'),
             instances: 1,
             autorestart: true,
             watch: false,
